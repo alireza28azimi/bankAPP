@@ -24,7 +24,7 @@ func (v Validator) ValidatorRegisterRequest(req dto.RegisterRequest) (map[string
 			validation.Required,
 			validation.Match(regexp.MustCompile(phoneNumberRegex))),
 	); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("unexpected error %w", err)
 	}
 	return nil, nil
 }
@@ -38,7 +38,7 @@ func (v Validator) checkPhoneNumberUniqueness(value interface{}) error {
 		}
 
 		if !isUnique {
-			return fmt.Errorf("phone number is not unique", err)
+			return fmt.Errorf("phone number is not unique %w" , err)
 		}
 		return nil
 	}

@@ -1,7 +1,0 @@
-production:
-  dialect: postgres
-  datasource: postgres://bankApp:bankApp123@localhost:5432/bankApp_db?sslmode=disable
-  dir: repository/postgresql/migrations
-  table: gorp_migrations
-
-

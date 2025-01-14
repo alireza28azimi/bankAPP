@@ -1,20 +1,23 @@
-version: '3.8'
+
 
 services:
-  gameapp-database:
-    image: postgres:13
+  bankapp-database:
+    image: mysql:8.0
     ports:
-      - "5432:5432"
-    container_name: bankApp-database
+      - "2002:3306" 
+    container_name: bankapp-database
     volumes:
-      - dbdata:/var/lib/postgresql/data
+      - dbdata:/var/lib/mysql
     restart: always
     environment:
-      POSTGRES_USER: bankApp
-      POSTGRES_PASSWORD: bankApp123
-      POSTGRES_DB: bankApp_db
-    command: ['postgres', '--lc_collate=C', '--lc_ctype=C']
+      MYSQL_ROOT_PASSWORD: bankappRoot7@1k2020
+      MYSQL_DATABASE: bankapp_db
+      MYSQL_USER: bankapp
+      MYSQL_PASSWORD: bankapp123
+    command: ['mysqld',
+      '--character-set-server=utf8mb4',
+      '--collation-server=utf8mb4_unicode_ci'
+    ]
 
 volumes:
   dbdata:
-

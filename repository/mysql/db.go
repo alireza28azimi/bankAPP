@@ -1,4 +1,4 @@
-package postgresql
+package mysql
 
 import (
 	"database/sql"
@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 
-	_ "github.com/lib/pq"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 type Config struct {
@@ -17,17 +17,17 @@ type Config struct {
 	DbName   string
 }
 
-type PostgresDB struct {
+type MySqlDB struct {
 	config Config
 	db     *sql.DB
 }
 
-func New(config Config) *PostgresDB {
+func New(config Config) *MySqlDB {
 
 	dsn := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable host=%s port=%d",
 		config.UserName, config.Password, config.DbName, config.Host, config.Port)
 
-	db, err := sql.Open("postgres", dsn)
+	db, err := sql.Open("MySqlDB ", dsn)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -36,5 +36,5 @@ func New(config Config) *PostgresDB {
 	db.SetMaxOpenConns(10)
 	db.SetMaxIdleConns(10)
 
-	return &PostgresDB{config: config, db: db}
+	return &MySqlDB{config: config, db: db}
 }

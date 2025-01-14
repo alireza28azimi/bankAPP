@@ -1,7 +1,9 @@
 package config
 
-import "main.go/repository/postgresql"
+import (
+	"main.go/repository/mysql"
+)
 
 type Config struct {
-	PostgresDB postgresql.Config
+	Mysql mysql.Config
 }
