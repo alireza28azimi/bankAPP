@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  gameapp-database:
+    image: postgres:13
+    ports:
+      - "5432:5432"
+    container_name: bankApp-database
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    restart: always
+    environment:
+      POSTGRES_USER: bankApp
+      POSTGRES_PASSWORD: bankApp123
+      POSTGRES_DB: bankApp_db
+    command: ['postgres', '--lc_collate=C', '--lc_ctype=C']
+
+volumes:
+  dbdata:
+
