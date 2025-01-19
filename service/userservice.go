@@ -17,6 +17,10 @@ type Service struct {
 	repo Repository
 }
 
+func New(repo Repository) Service {
+	return Service{repo: repo}
+}
+
 func (s Service) Register(req dto.RegisterRequest) (dto.RegisterResponse, error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
@@ -46,4 +50,39 @@ func (s Service) Register(req dto.RegisterRequest) (dto.RegisterResponse, error)
 		},
 	}, nil
 
+}
+
+func (s Service) Login(req dto.LoginRequest) (dto.LoginResponse, error) {
+	user, err := s.repo.GetUserByPhoneNumber(req.PhoneNumber)
+	if err != nil {
+		return dto.LoginResponse{}, fmt.Errorf("unexpected err %w", err)
+	}
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password))
+
+	if err != nil {
+		return dto.LoginResponse{}, fmt.Errorf("invalid password: %w", err)
+	}
+	return dto.LoginResponse{
+		User: dto.UserInfo{
+			ID:          user.ID,
+			Name:        user.Name,
+			PhoneNumber: user.PhoneNumber,
+		},
+	}, nil
+}
+
+type ProfileRequest struct {
+	UserID uint
+}
+type ProfileResponse struct {
+	Name string `json:"name"`
+}
+
+func (s Service) Profile(req ProfileRequest) (ProfileResponse, error) {
+	user, err := s.repo.GetUserByID(req.UserID)
+	if err != nil {
+		return ProfileResponse{}, err
+	}
+
+	return ProfileResponse{Name: user.Name}, nil
 }

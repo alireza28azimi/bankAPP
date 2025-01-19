@@ -22,7 +22,8 @@ func (v Validator) ValidatorRegisterRequest(req dto.RegisterRequest) (map[string
 			validation.Match(regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`))),
 		validation.Field(&req.PhoneNumber,
 			validation.Required,
-			validation.Match(regexp.MustCompile(phoneNumberRegex))),
+			validation.Match(regexp.MustCompile(phoneNumberRegex)).Error("errmsg.ErrorMsgPhoneNumberIsNotValid"),
+			validation.By(v.checkPhoneNumberUniqueness)),
 	); err != nil {
 		return nil, fmt.Errorf("unexpected error %w", err)
 	}
@@ -38,7 +39,7 @@ func (v Validator) checkPhoneNumberUniqueness(value interface{}) error {
 		}
 
 		if !isUnique {
-			return fmt.Errorf("phone number is not unique %w" , err)
+			return fmt.Errorf("phone number is not unique %w", err)
 		}
 		return nil
 	}

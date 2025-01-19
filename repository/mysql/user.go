@@ -41,3 +41,27 @@ func scanUser(row *sql.Row) (entity.User, error) {
 	return user, nil
 
 }
+func (d *MySqlDB) GetUserByPhoneNumber(phoneNumber string) (entity.User, error) {
+	row := d.db.QueryRow(`select *from user where phone_number =?`, phoneNumber)
+	user, err := scanUser(row)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return entity.User{}, fmt.Errorf("you phone number is not register")
+		}
+		return entity.User{}, fmt.Errorf("unexpected error %w", err)
+	}
+	return user, nil
+
+}
+func (d *MySqlDB) GetUserByID(userID uint) (entity.User, error) {
+	row := d.db.QueryRow(`SELECT id, phone_number, name, password, created_at FROM users WHERE id = ?`, userID)
+	user, err := scanUser(row)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return entity.User{}, err
+		}
+		return entity.User{}, err
+
+	}
+	return user, nil
+}
