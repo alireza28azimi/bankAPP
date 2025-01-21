@@ -12,13 +12,18 @@ type Repository interface {
 	GetUserByPhoneNumber(phoneNumber string) (entity.User, error)
 	GetUserByID(userID uint) (entity.User, error)
 }
+type AuthGenerator interface {
+	CreateAccessToken(user entity.User) (string, error)
+	CreateRefreshToken(user entity.User) (string, error)
+}
 
 type Service struct {
 	repo Repository
+	auth AuthGenerator
 }
 
-func New(repo Repository) Service {
-	return Service{repo: repo}
+func New(authGenerator AuthGenerator, repo Repository) Service {
+	return Service{auth: authGenerator, repo: repo}
 }
 
 func (s Service) Register(req dto.RegisterRequest) (dto.RegisterResponse, error) {

@@ -1,13 +1,12 @@
 package httpserver
 
 import (
-	"net/http"
-
 	"github.com/labstack/echo/v4"
+	"net/http"
 )
 
-func healthCheck(c echo.Context) {
-	c.JSON(http.StatusOK, echo.Map{
-		"message": "every thing is good",
+func healthCheck(c echo.Context) error {
+	return c.JSON(http.StatusOK, echo.Map{
+		"message": "everything is good!",
 	})
 }

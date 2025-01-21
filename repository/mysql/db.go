@@ -3,7 +3,6 @@ package mysql
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -12,29 +11,28 @@ import (
 type Config struct {
 	UserName string
 	Password string
-	Host     string
 	Port     int
+	Host     string
 	DbName   string
 }
 
-type MySqlDB struct {
+type MysqlDB struct {
 	config Config
 	db     *sql.DB
 }
 
-func New(config Config) *MySqlDB {
+// GetUserByPhoneNumber implements uservalidator.Repository.
 
-	dsn := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable host=%s port=%d",
-		config.UserName, config.Password, config.DbName, config.Host, config.Port)
-
-	db, err := sql.Open("MySqlDB ", dsn)
+func New(config Config) *MysqlDB {
+	dsn := fmt.Sprintf("%s:%s@(%s:%d)/%s", config.UserName, config.Password, config.Host, config.Port, config.DbName)
+	db, err := sql.Open("mysql", dsn)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	db.SetConnMaxLifetime(time.Minute * 3)
 	db.SetMaxOpenConns(10)
 	db.SetMaxIdleConns(10)
 
-	return &MySqlDB{config: config, db: db}
+	return &MysqlDB{config: config, db: db}
 }

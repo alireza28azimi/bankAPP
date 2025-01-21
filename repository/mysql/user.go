@@ -3,10 +3,11 @@ package mysql
 import (
 	"database/sql"
 	"fmt"
+	_ "github.com/go-sql-driver/mysql"
 	"main.go/entity"
 )
 
-func (d *MySqlDB) IsPhoneNumberUnique(phoneNumber string) (bool, error) {
+func (d *MysqlDB) IsPhoneNumberUnique(phoneNumber string) (bool, error) {
 
 	row := d.db.QueryRow(`select *from users where phone_number =?`, phoneNumber)
 	_, err := scanUser(row)
@@ -19,7 +20,7 @@ func (d *MySqlDB) IsPhoneNumberUnique(phoneNumber string) (bool, error) {
 	return false, nil
 
 }
-func (d *MySqlDB) Register(u entity.User) (entity.User, error) {
+func (d *MysqlDB) Register(u entity.User) (entity.User, error) {
 	res, err := d.db.Exec(`INSERT INTO users(name, phone_number, password) VALUES(?, ?, ?)`, u.Name, u.PhoneNumber, u.Password)
 
 	if err != nil {
@@ -41,7 +42,7 @@ func scanUser(row *sql.Row) (entity.User, error) {
 	return user, nil
 
 }
-func (d *MySqlDB) GetUserByPhoneNumber(phoneNumber string) (entity.User, error) {
+func (d *MysqlDB) GetUserByPhoneNumber(phoneNumber string) (entity.User, error) {
 	row := d.db.QueryRow(`select *from user where phone_number =?`, phoneNumber)
 	user, err := scanUser(row)
 	if err != nil {
@@ -53,7 +54,7 @@ func (d *MySqlDB) GetUserByPhoneNumber(phoneNumber string) (entity.User, error) 
 	return user, nil
 
 }
-func (d *MySqlDB) GetUserByID(userID uint) (entity.User, error) {
+func (d *MysqlDB) GetUserByID(userID uint) (entity.User, error) {
 	row := d.db.QueryRow(`SELECT id, phone_number, name, password, created_at FROM users WHERE id = ?`, userID)
 	user, err := scanUser(row)
 	if err != nil {
