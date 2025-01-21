@@ -3,11 +3,11 @@ package httpserver
 import (
 	"net/http"
 
-	"github.com/gin-gonic/gin"
+	"github.com/labstack/echo/v4"
 )
 
-func healthCheck(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
+func healthCheck(c echo.Context) {
+	c.JSON(http.StatusOK, echo.Map{
 		"message": "every thing is good",
 	})
 }

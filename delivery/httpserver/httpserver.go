@@ -1,24 +1,36 @@
 package httpserver
 
 import (
-	"github.com/gin-gonic/gin"
-	"main.go/config"
+	"errors"
+	"log/slog"
+	"net/http"
+
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 type Server struct {
-	confg       config.Config
-	userhandler UserHandler
 }
 
 func (s Server) Serve() {
-	// Create a new Gin router
-	router := gin.Default()
+	// Echo instance
+	e := echo.New()
 
-	// Define a simple GET route
-	router.GET("/heathcheck", healthCheck)
+	// Middleware
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
 
-	s.userhandler.SetUserRoute(router)
+	// Routes
+	e.GET("/health-check", healthCheck)
 
-	// Start the server on port 8080
-	router.Run(":8080")
+	s.userHandler.SetUserRoute(e)
+	// Start server
+	if err := e.Start(":8080"); err != nil && !errors.Is(err, http.ErrServerClosed) {
+		slog.Error("failed to start server", "error", err)
+	}
+}
+
+// Handler
+func hello(c echo.Context) error {
+	return c.String(http.StatusOK, "Hello, World!")
 }

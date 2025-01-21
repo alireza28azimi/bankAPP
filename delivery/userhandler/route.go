@@ -1,9 +1,9 @@
 package userhandler
 
-import "github.com/gin-gonic/gin"
+import "github.com/labstack/echo/v4"
 
-func (h Handler) SetUserRoute(router *gin.RouterGroup) {
-	userG := router.Group("/users")
+func (h Handler) SetUserRoute(e *echo.Echo) {
+	userG := e.Group("/users")
 	userG.POST("/register", h.userRegister)
 	userG.POST("/login", h.userLogin)
 	userG.GET("profile", h.userProfile)
